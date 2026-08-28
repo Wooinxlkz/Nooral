@@ -1,0 +1,480 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+@custom-variant sepia (&:is(.sepia *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: 'Outfit', sans-serif;
+  --font-arabic: 'Amiri Quran', serif;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: calc(1 / 0.75);
+  --text-sm: 0.875rem;
+  --text-sm--line-height: calc(1.25 / 0.875);
+  --text-base: 1rem;
+  --text-base--line-height: calc(1.5 / 1);
+  --text-lg: 1.125rem;
+  --text-lg--line-height: calc(1.75 / 1.125);
+  --text-xl: 1.25rem;
+  --text-xl--line-height: calc(1.75 / 1.25);
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: calc(2 / 1.5);
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: calc(2.25 / 1.875);
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: calc(2.5 / 2.25);
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+  --text-7xl: 4.5rem;
+  --text-7xl--line-height: 1;
+  --text-8xl: 6rem;
+  --text-8xl--line-height: 1;
+  --text-9xl: 8rem;
+  --text-9xl--line-height: 1;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* LIGHT MODE (Warm Teal / Off-White) */
+:root {
+  --ayah-marker-color: #C0A060;
+  --tajweed-mark-color: #B8860B;
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
+
+  --opaque-button-border-intensity: -8;
+
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(0,0,0, .08);
+
+  --background: 40 33% 98%; /* warm off-white */
+  --foreground: 173 59% 15%; /* deep teal text */
+
+  --border: 40 20% 88%;
+  --input: 40 20% 92%;
+  --ring: 173 59% 25%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 173 59% 15%;
+  --card-border: 40 20% 90%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 173 59% 15%;
+  --popover-border: 40 20% 90%;
+
+  --primary: 173 59% 25%; /* rich deep teal */
+  --primary-foreground: 40 33% 98%;
+
+  --secondary: 43 74% 66%; /* warm gold */
+  --secondary-foreground: 173 59% 15%;
+
+  --muted: 40 20% 92%;
+  --muted-foreground: 173 30% 40%;
+
+  --accent: 43 74% 66%;
+  --accent-foreground: 173 59% 15%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --sidebar: 40 33% 96%;
+  --sidebar-foreground: 173 59% 15%;
+  --sidebar-border: 40 20% 88%;
+  --sidebar-primary: 173 59% 25%;
+  --sidebar-primary-foreground: 40 33% 98%;
+  --sidebar-accent: 40 20% 90%;
+  --sidebar-accent-foreground: 173 59% 15%;
+  --sidebar-ring: 173 59% 25%;
+
+  --radius: .75rem; 
+  --shadow-2xs: 0px 2px 0px 0px hsl(173 59% 15% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(173 59% 15% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(173 59% 15% / 0.00), 0px 1px 2px -1px hsl(173 59% 15% / 0.05);
+  --shadow: 0px 2px 0px 0px hsl(173 59% 15% / 0.00), 0px 1px 2px -1px hsl(173 59% 15% / 0.05);
+  --shadow-md: 0px 2px 0px 0px hsl(173 59% 15% / 0.00), 0px 2px 4px -1px hsl(173 59% 15% / 0.05);
+  --shadow-lg: 0px 2px 0px 0px hsl(173 59% 15% / 0.00), 0px 4px 6px -1px hsl(173 59% 15% / 0.05);
+  --shadow-xl: 0px 2px 0px 0px hsl(173 59% 15% / 0.00), 0px 8px 10px -1px hsl(173 59% 15% / 0.05);
+  --shadow-2xl: 0px 2px 0px 0px hsl(173 59% 15% / 0.00);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --primary-border: hsl(var(--primary));
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --secondary-border: hsl(var(--secondary));
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --muted-border: hsl(var(--muted));
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --accent-border: hsl(var(--accent));
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --destructive-border: hsl(var(--destructive));
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+.dark {
+  --ayah-marker-color: #C0A060;
+  --tajweed-mark-color: #C0A060;
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
+
+  --opaque-button-border-intensity: 9;
+
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(255,255,255, .09);
+
+  --background: 173 60% 6%; /* extremely deep teal, almost black */
+  --foreground: 40 33% 90%; 
+
+  --border: 173 40% 15%;
+  --input: 173 40% 15%;
+  --ring: 43 74% 66%;
+
+  --card: 173 50% 9%;
+  --card-foreground: 40 33% 90%;
+  --card-border: 173 40% 15%;
+
+  --popover: 173 50% 9%;
+  --popover-foreground: 40 33% 90%;
+  --popover-border: 173 40% 15%;
+
+  --primary: 43 74% 66%; /* gold as primary in dark mode */
+  --primary-foreground: 173 60% 6%;
+
+  --secondary: 173 40% 20%;
+  --secondary-foreground: 40 33% 90%;
+
+  --muted: 173 40% 15%;
+  --muted-foreground: 40 20% 60%;
+
+  --accent: 173 40% 20%;
+  --accent-foreground: 40 33% 90%;
+
+  --destructive: 0 62% 40%;
+  --destructive-foreground: 0 0% 100%;
+}
+
+.sepia {
+  --ayah-marker-color: #8B6914;
+  --tajweed-mark-color: #8B6914;
+  --background: 35 45% 90%; /* parchment */
+  --foreground: 25 30% 20%; /* dark brown ink */
+
+  --border: 35 30% 80%;
+  --input: 35 30% 80%;
+  --ring: 25 30% 20%;
+
+  --card: 35 50% 93%;
+  --card-foreground: 25 30% 20%;
+  --card-border: 35 30% 80%;
+
+  --popover: 35 50% 93%;
+  --popover-foreground: 25 30% 20%;
+  --popover-border: 35 30% 80%;
+
+  --primary: 25 40% 30%; 
+  --primary-foreground: 35 45% 90%;
+
+  --secondary: 35 30% 80%;
+  --secondary-foreground: 25 30% 20%;
+
+  --muted: 35 30% 85%;
+  --muted-foreground: 25 20% 40%;
+
+  --accent: 35 30% 80%;
+  --accent-foreground: 25 30% 20%;
+
+  --destructive: 0 60% 40%;
+  --destructive-foreground: 0 0% 100%;
+}
+
+.ayah-marker {
+  font-family: 'Scheherazade New', serif;
+  font-size: 0.85em;
+  color: var(--ayah-marker-color);
+  margin: 0 6px;
+  user-select: none;
+}
+
+/* Rub el Hizb (۞) and Sajda (۩) inline marks */
+.quranic-inline-mark {
+  font-family: 'Scheherazade New', serif;
+  color: var(--ayah-marker-color);
+  user-select: none;
+  pointer-events: none;
+  margin: 0 3px;
+}
+
+/* Tajweed annotation characters U+06D6–06DC */
+.tajweed-mark {
+  color: var(--tajweed-mark-color);
+}
+
+/* Quran.com tajweed — <tajweed class="rule"> custom elements from the real API */
+/* ── Hamza Wasl / Silent ─────────────────────────────── */
+tajweed.ham_wasl, tajweed.slnt { color: #AAAAAA; }
+/* ── Madd (elongation) ───────────────────────────────── */
+tajweed.madda_necessary  { color: #DD0008; }
+tajweed.madda_obligatory { color: #DD0008; }
+tajweed.madda_permissible { color: #E86060; }
+tajweed.madda_normal     { color: #F07070; }
+/* ── Qalqalah ────────────────────────────────────────── */
+tajweed.qalaqah { color: #DD00DD; }
+/* ── Ikhfa / Ikhfa Shafawi ───────────────────────────── */
+tajweed.ikhafa, tajweed.ikhf_shfw { color: #C8A000; }
+/* ── Idgham ──────────────────────────────────────────── */
+tajweed.idgham_ghunnah, tajweed.idgm_ghna, tajweed.idgm_shfw { color: #169200; }
+tajweed.idgham_wo_ghunnah, tajweed.idgm_wo_ghna { color: #169200; }
+/* ── Iqlab ───────────────────────────────────────────── */
+tajweed.iqlab { color: #26BFFD; }
+/* ── Ghunnah ─────────────────────────────────────────── */
+tajweed.ghna, tajweed.ghunnah { color: #FF7E1E; }
+/* ── Laam Shamsiyah ──────────────────────────────────── */
+tajweed.laam_shamsiyah { color: #AAAAAA; }
+/* ── End marker (ayah end symbol) ───────────────────── */
+tajweed.end { color: inherit; }
+
+/* Base tajweed element — inherit font from parent */
+tajweed { font-family: inherit; }
+.tajweed-text { font-family: 'Amiri Quran', serif; }
+
+@layer base {
+  * {
+    @apply border-border;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    overflow-y: scroll;
+  }
+
+}
+
+/**
+ * Using the elevate system.
+ * Automatic contrast adjustment.
+ *
+ * <element className="hover-elevate" />
+ * <element className="active-elevate-2" />
+ *
+ * // Using the tailwind utility when a data attribute is "on"
+ * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
+ * // Or manually controlling the toggle state
+ * <element className="toggle-elevate toggle-elevated" />
+ *
+ * Elevation systems have to handle many states.
+ * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
+ * - toggled or not
+ * - focused or not (this is not handled with these utilities)
+ *
+ * Even without handling focused or not, this is six possible combinations that
+ * need to be distinguished from eachother visually.
+ */
+@layer utilities {
+
+  /* Hide ugly search cancel button in Chrome until we can style it properly */
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Hide native spin buttons on number inputs — they appear white/mismatched */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
+   * buttons/badges can remove the automatic brightness adjustment on interactions
+   * and program their own. */
+  .no-default-hover-elevate {}
+
+  .no-default-active-elevate {}
+
+
+  /**
+   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
+   * This way they can stack/compound. Both will overlap the parent's borders!
+   * So borders will be automatically adjusted both on toggle, and hover/active,
+   * and they will be compounded.
+   */
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: -1;
+    /* sits behind content but above backdrop */
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  /* Does not work on elements with overflow:hidden! */
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    /*border-radius: inherit;   match rounded corners */
+    border-radius: inherit;
+    z-index: 999;
+    /* sits in front of content */
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
+    inset: -1px;
+  }
+}
+
+/* Search result highlighted terms */
+.search-result-text em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Tiptap rich text editor prose styles */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+.ProseMirror ul { list-style: disc; padding-left: 1.25rem; }
+.ProseMirror ol { list-style: decimal; padding-left: 1.25rem; }
+.ProseMirror li { margin: 0.15rem 0; }
+.ProseMirror strong { font-weight: 700; }
+.ProseMirror em { font-style: italic; }
+
+/* ── Scrollbar — outside @layer so it wins specificity ────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.55);
+}
+::-webkit-scrollbar-corner {
+  background: hsl(var(--background));
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) hsl(var(--background));
+}
+
+

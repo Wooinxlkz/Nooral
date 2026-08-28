@@ -1,0 +1,1611 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: NoorAl Quran Platform API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: bookmarks
+    description: Ayah bookmarks
+  - name: notes
+    description: Per-ayah personal notes
+  - name: hard-ayahs
+    description: Ayahs flagged as hard to memorize
+  - name: memorization
+    description: Memorization progress tracking
+  - name: last-read
+    description: Last read position
+  - name: goals
+    description: Daily reading goals
+  - name: streaks
+    description: Reading streak tracking
+  - name: tasbih
+    description: Tasbih (dhikr counter) history
+  - name: dashboard
+    description: Dashboard summary data
+  - name: search
+    description: Quran search
+  - name: moods
+    description: Per-ayah mood journal
+  - name: khatm
+    description: Quran completion history
+  - name: donations
+    description: Support pledges and sadaqah intents
+  - name: reading-logs
+    description: Reading session logging and analytics
+  - name: pinned-verses
+    description: User-pinned Quran verses
+  - name: verse-of-day
+    description: Daily featured verse
+  - name: profile
+    description: User profile and achievement stats
+
+paths:
+  # ── Verse of the Day ─────────────────────────────────────────────────────
+  /verse-of-day:
+    get:
+      operationId: getVerseOfDay
+      tags: [verse-of-day]
+      summary: Get today's featured verse (date-deterministic)
+      responses:
+        "200":
+          description: Today's verse
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerseOfDay"
+
+  # ── Profile ───────────────────────────────────────────────────────────────
+  /profile/me:
+    get:
+      operationId: getProfileMe
+      tags: [profile]
+      summary: Get the authenticated user's DB record (email, name, avatar, join date)
+      responses:
+        "200":
+          description: User record from database
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileMe"
+        "401":
+          description: Unauthorized
+
+  /profile/stats:
+    get:
+      operationId: getProfileStats
+      tags: [profile]
+      summary: Get aggregated user stats and achievement badges
+      responses:
+        "200":
+          description: Profile stats and badges
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileStats"
+        "401":
+          description: Unauthorized
+
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ── Bookmarks ──────────────────────────────────────────────────────────────
+  /bookmarks:
+    get:
+      operationId: getBookmarks
+      tags: [bookmarks]
+      summary: List all bookmarks for the authenticated user
+      responses:
+        "200":
+          description: List of bookmarks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Bookmark"
+    post:
+      operationId: createBookmark
+      tags: [bookmarks]
+      summary: Bookmark an ayah
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookmarkInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bookmark"
+
+  /bookmarks/{id}:
+    delete:
+      operationId: deleteBookmark
+      tags: [bookmarks]
+      summary: Remove a bookmark
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Notes ──────────────────────────────────────────────────────────────────
+  /notes:
+    get:
+      operationId: getNotes
+      tags: [notes]
+      summary: List all notes for the authenticated user
+      parameters:
+        - name: surahId
+          in: query
+          schema:
+            type: integer
+          description: Filter by surah
+      responses:
+        "200":
+          description: List of notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+    post:
+      operationId: createNote
+      tags: [notes]
+      summary: Create a note on an ayah
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+
+  /notes/{id}:
+    patch:
+      operationId: updateNote
+      tags: [notes]
+      summary: Update a note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+    delete:
+      operationId: deleteNote
+      tags: [notes]
+      summary: Delete a note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Hard Ayahs ─────────────────────────────────────────────────────────────
+  /hard-ayahs:
+    get:
+      operationId: getHardAyahs
+      tags: [hard-ayahs]
+      summary: Get hard ayahs due for review
+      responses:
+        "200":
+          description: List of hard ayahs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HardAyah"
+    post:
+      operationId: flagHardAyah
+      tags: [hard-ayahs]
+      summary: Flag an ayah as hard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HardAyahInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HardAyah"
+
+  /hard-ayahs/{id}/review:
+    post:
+      operationId: reviewHardAyah
+      tags: [hard-ayahs]
+      summary: Submit a review result for a hard ayah (spaced repetition)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HardAyahReview"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HardAyah"
+
+  /hard-ayahs/{id}:
+    delete:
+      operationId: removeHardAyah
+      tags: [hard-ayahs]
+      summary: Remove an ayah from the hard list
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Memorization ───────────────────────────────────────────────────────────
+  /memorization:
+    get:
+      operationId: getMemorizationProgress
+      tags: [memorization]
+      summary: Get memorization progress overview
+      responses:
+        "200":
+          description: Progress data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemorizationOverview"
+
+  /memorization/ayahs:
+    post:
+      operationId: markAyahMemorized
+      tags: [memorization]
+      summary: Mark an ayah as memorized or not
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemorizationEntry"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemorizationProgress"
+
+  /memorization/surahs:
+    get:
+      operationId: getSurahMemorizationStats
+      tags: [memorization]
+      summary: Per-surah memorization counts
+      responses:
+        "200":
+          description: Per-surah stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SurahMemorizationStat"
+
+  # ── Last Read ──────────────────────────────────────────────────────────────
+  /last-read:
+    get:
+      operationId: getLastRead
+      tags: [last-read]
+      summary: Get last read position
+      responses:
+        "200":
+          description: Last read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LastRead"
+    put:
+      operationId: saveLastRead
+      tags: [last-read]
+      summary: Save last read position
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LastReadInput"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LastRead"
+
+  # ── Goals ─────────────────────────────────────────────────────────────────
+  /goals:
+    get:
+      operationId: getGoal
+      tags: [goals]
+      summary: Get current reading goal
+      responses:
+        "200":
+          description: Goal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadingGoal"
+    put:
+      operationId: saveGoal
+      tags: [goals]
+      summary: Create or update reading goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReadingGoalInput"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadingGoal"
+
+  /goals/progress:
+    get:
+      operationId: getGoalProgressHistory
+      tags: [goals]
+      summary: Get last 30 days of goal progress
+      responses:
+        "200":
+          description: History
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GoalProgress"
+    post:
+      operationId: recordGoalProgress
+      tags: [goals]
+      summary: Record today's reading progress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalProgressInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GoalProgress"
+
+  # ── Streaks ───────────────────────────────────────────────────────────────
+  /streaks:
+    get:
+      operationId: getStreak
+      tags: [streaks]
+      summary: Get current streak info
+      responses:
+        "200":
+          description: Streak info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Streak"
+
+  # ── Tasbih ────────────────────────────────────────────────────────────────
+  /tasbih:
+    get:
+      operationId: getTasbihHistory
+      tags: [tasbih]
+      summary: Get tasbih session history
+      responses:
+        "200":
+          description: History
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TasbihSession"
+    post:
+      operationId: saveTasbihSession
+      tags: [tasbih]
+      summary: Save a completed tasbih session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TasbihSessionInput"
+      responses:
+        "201":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TasbihSession"
+
+  # ── Dashboard ─────────────────────────────────────────────────────────────
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Full dashboard summary for logged-in user
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  # ── Moods ─────────────────────────────────────────────────────────────────
+  /moods:
+    get:
+      operationId: getMoods
+      tags: [moods]
+      summary: Get mood tags for the authenticated user
+      parameters:
+        - name: surahId
+          in: query
+          schema:
+            type: integer
+        - name: ayahNumber
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of mood tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AyahMood"
+    post:
+      operationId: saveMood
+      tags: [moods]
+      summary: Save or update a mood tag for an ayah
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AyahMoodInput"
+      responses:
+        "201":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AyahMood"
+
+  /moods/{id}:
+    delete:
+      operationId: deleteMood
+      tags: [moods]
+      summary: Remove a mood tag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Khatm ─────────────────────────────────────────────────────────────────
+  /khatm:
+    get:
+      operationId: getKhatmHistory
+      tags: [khatm]
+      summary: Get Quran completion history
+      responses:
+        "200":
+          description: List of khatm completions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KhatmEntry"
+    post:
+      operationId: logKhatm
+      tags: [khatm]
+      summary: Log a Quran completion (khatm)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KhatmInput"
+      responses:
+        "201":
+          description: Logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KhatmEntry"
+
+  # ── Search ────────────────────────────────────────────────────────────────
+  /search:
+    get:
+      operationId: searchQuran
+      tags: [search]
+      summary: Search Quran ayahs by keyword
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: language
+          in: query
+          schema:
+            type: string
+            enum: [en, ar]
+            default: en
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchResult"
+
+  # ── Reading Logs ──────────────────────────────────────────────────────────
+  /reading-logs:
+    post:
+      operationId: logReading
+      tags: [reading-logs]
+      summary: Log a reading session (called when user opens a surah)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReadingLogInput"
+      responses:
+        "201":
+          description: Logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadingLogEntry"
+
+  /reading-logs/analytics:
+    get:
+      operationId: getReadingAnalytics
+      tags: [reading-logs]
+      summary: Get reading analytics summary for authenticated user
+      responses:
+        "200":
+          description: Analytics summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadingAnalytics"
+
+  /reading-logs/heatmap:
+    get:
+      operationId: getReadingHeatmap
+      tags: [reading-logs]
+      summary: Get full-year reading activity heatmap (one entry per day with ayah count)
+      parameters:
+        - in: query
+          name: year
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Array of date+count entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required: [date, count]
+                  properties:
+                    date:
+                      type: string
+                    count:
+                      type: integer
+
+  # ── Pinned Verses ──────────────────────────────────────────────────────────
+  /pinned-verses:
+    get:
+      operationId: getPinnedVerses
+      tags: [pinned-verses]
+      summary: List pinned verses for the authenticated user
+      responses:
+        "200":
+          description: List of pinned verses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PinnedVerse"
+    post:
+      operationId: pinVerse
+      tags: [pinned-verses]
+      summary: Pin a verse (max 10)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PinnedVerseInput"
+      responses:
+        "201":
+          description: Pinned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PinnedVerse"
+
+  /pinned-verses/{id}:
+    delete:
+      operationId: unpinVerse
+      tags: [pinned-verses]
+      summary: Unpin a verse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Unpinned
+
+  # ── Collections ────────────────────────────────────────────────────────────
+  /collections:
+    get:
+      operationId: getCollections
+      tags: [collections]
+      summary: List all collections for the authenticated user
+      responses:
+        "200":
+          description: List of collections with verse counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Collection"
+    post:
+      operationId: createCollection
+      tags: [collections]
+      summary: Create a new collection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectionInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+
+  /collections/{id}:
+    get:
+      operationId: getCollection
+      tags: [collections]
+      summary: Get a collection with all its verses
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Collection with verses
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionDetail"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateCollection
+      tags: [collections]
+      summary: Update collection name/description
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectionInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+    delete:
+      operationId: deleteCollection
+      tags: [collections]
+      summary: Delete a collection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /collections/{id}/verses:
+    post:
+      operationId: addVerseToCollection
+      tags: [collections]
+      summary: Add a verse to a collection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectionVerseInput"
+      responses:
+        "201":
+          description: Added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionVerse"
+        "409":
+          description: Already in collection
+
+  /collections/{id}/verses/{verseKey}:
+    delete:
+      operationId: removeVerseFromCollection
+      tags: [collections]
+      summary: Remove a verse from a collection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: verseKey
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Removed
+
+  # ── Donations ──────────────────────────────────────────────────────────────
+  /donations:
+    post:
+      operationId: submitDonation
+      tags: [donations]
+      summary: Record a support pledge or sadaqah intent (no payment processed)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DonationInput"
+      responses:
+        "201":
+          description: Donation intent recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Donation"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    # ── Bookmarks ─────────────────────────────────────────────────────────────
+    Bookmark:
+      type: object
+      required: [id, userId, surahId, ayahNumber, surahNameEn, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        surahNameAr:
+          type: string
+        ayahText:
+          type: string
+        createdAt:
+          type: string
+
+    BookmarkInput:
+      type: object
+      required: [surahId, ayahNumber, surahNameEn]
+      properties:
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        surahNameAr:
+          type: string
+        ayahText:
+          type: string
+
+    # ── Notes ─────────────────────────────────────────────────────────────────
+    Note:
+      type: object
+      required: [id, userId, surahId, ayahNumber, content, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    NoteInput:
+      type: object
+      required: [surahId, ayahNumber, content]
+      properties:
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        content:
+          type: string
+
+    NoteUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+
+    # ── Hard Ayahs ────────────────────────────────────────────────────────────
+    HardAyah:
+      type: object
+      required: [id, userId, surahId, ayahNumber, nextReviewDate, reviewCount]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        nextReviewDate:
+          type: string
+        reviewCount:
+          type: integer
+        lastResult:
+          type: ["string", "null"]
+
+    HardAyahInput:
+      type: object
+      required: [surahId, ayahNumber]
+      properties:
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+
+    HardAyahReview:
+      type: object
+      required: [result]
+      properties:
+        result:
+          type: string
+          enum: [correct, needs_review]
+
+    # ── Memorization ──────────────────────────────────────────────────────────
+    MemorizationProgress:
+      type: object
+      required: [id, userId, surahId, ayahNumber, memorized]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        memorized:
+          type: boolean
+        memorizedAt:
+          type: ["string", "null"]
+
+    MemorizationEntry:
+      type: object
+      required: [surahId, ayahNumber, memorized]
+      properties:
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        memorized:
+          type: boolean
+
+    MemorizationOverview:
+      type: object
+      required: [totalMemorized, totalAyahs, percentage]
+      properties:
+        totalMemorized:
+          type: integer
+        totalAyahs:
+          type: integer
+        percentage:
+          type: number
+
+    SurahMemorizationStat:
+      type: object
+      required: [surahId, surahName, memorizedCount, totalAyahs]
+      properties:
+        surahId:
+          type: integer
+        surahName:
+          type: string
+        memorizedCount:
+          type: integer
+        totalAyahs:
+          type: integer
+
+    # ── Last Read ─────────────────────────────────────────────────────────────
+    LastRead:
+      type: object
+      required: [id, userId, surahId, ayahNumber, updatedAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        updatedAt:
+          type: string
+
+    LastReadInput:
+      type: object
+      required: [surahId, ayahNumber]
+      properties:
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+
+    # ── Goals ─────────────────────────────────────────────────────────────────
+    ReadingGoal:
+      type: object
+      required: [id, userId, goalType, targetAmount, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        goalType:
+          type: string
+          enum: [ayahs, pages, juz]
+        targetAmount:
+          type: integer
+        createdAt:
+          type: string
+
+    ReadingGoalInput:
+      type: object
+      required: [goalType, targetAmount]
+      properties:
+        goalType:
+          type: string
+          enum: [ayahs, pages, juz]
+        targetAmount:
+          type: integer
+
+    GoalProgress:
+      type: object
+      required: [id, userId, date, amountRead, goalMet]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        date:
+          type: string
+        amountRead:
+          type: integer
+        goalMet:
+          type: boolean
+
+    GoalProgressInput:
+      type: object
+      required: [amountRead]
+      properties:
+        amountRead:
+          type: integer
+
+    # ── Streaks ───────────────────────────────────────────────────────────────
+    Streak:
+      type: object
+      required: [currentStreak, longestStreak, lastReadDate]
+      properties:
+        currentStreak:
+          type: integer
+        longestStreak:
+          type: integer
+        lastReadDate:
+          type: ["string", "null"]
+
+    # ── Tasbih ────────────────────────────────────────────────────────────────
+    TasbihSession:
+      type: object
+      required: [id, userId, dhikrPhrase, count, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        dhikrPhrase:
+          type: string
+        count:
+          type: integer
+        createdAt:
+          type: string
+
+    TasbihSessionInput:
+      type: object
+      required: [dhikrPhrase, count]
+      properties:
+        dhikrPhrase:
+          type: string
+        count:
+          type: integer
+
+    # ── Dashboard ─────────────────────────────────────────────────────────────
+    DashboardSummary:
+      type: object
+      required: [lastRead, streak, goalProgress, memorizationOverview, hardAyahsDueToday, recentNotes]
+      properties:
+        lastRead:
+          $ref: "#/components/schemas/LastRead"
+        streak:
+          $ref: "#/components/schemas/Streak"
+        goalProgress:
+          $ref: "#/components/schemas/GoalProgress"
+        memorizationOverview:
+          $ref: "#/components/schemas/MemorizationOverview"
+        hardAyahsDueToday:
+          type: integer
+        recentNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Note"
+        avgDailyAyahs:
+          type: number
+        estimatedDaysToFinish:
+          type: ["number", "null"]
+
+    # ── Moods ─────────────────────────────────────────────────────────────────
+    AyahMood:
+      type: object
+      required: [id, userId, surahId, ayahNumber, mood, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        mood:
+          type: string
+          enum: [peace, reflection, gratitude, awe, hope]
+        createdAt:
+          type: string
+
+    AyahMoodInput:
+      type: object
+      required: [surahId, ayahNumber, mood]
+      properties:
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        mood:
+          type: string
+          enum: [peace, reflection, gratitude, awe, hope]
+
+    # ── Khatm ─────────────────────────────────────────────────────────────────
+    KhatmEntry:
+      type: object
+      required: [id, userId, completedAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        completedAt:
+          type: string
+        reciterUsed:
+          type: ["string", "null"]
+
+    KhatmInput:
+      type: object
+      properties:
+        reciterUsed:
+          type: string
+
+    # ── Donations ──────────────────────────────────────────────────────────────
+    Donation:
+      type: object
+      required: [id, type, currency, isAnonymous, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [support, sadaqah]
+        amount:
+          type: ["string", "null"]
+        currency:
+          type: string
+        frequency:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        note:
+          type: ["string", "null"]
+        sadaqahFor:
+          type: ["string", "null"]
+        isAnonymous:
+          type: boolean
+        createdAt:
+          type: string
+
+    DonationInput:
+      type: object
+      required: [type, currency, isAnonymous]
+      properties:
+        type:
+          type: string
+          enum: [support, sadaqah]
+        amount:
+          type: string
+        currency:
+          type: string
+        frequency:
+          type: string
+          enum: [one-time, monthly]
+        email:
+          type: string
+        note:
+          type: string
+        sadaqahFor:
+          type: string
+        isAnonymous:
+          type: boolean
+
+    # ── Reading Logs ──────────────────────────────────────────────────────────
+    ReadingLogEntry:
+      type: object
+      required: [id, userId, surahId, surahNameEn, ayahCount, readAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        surahNameEn:
+          type: string
+        ayahCount:
+          type: integer
+        readAt:
+          type: string
+
+    ReadingLogInput:
+      type: object
+      required: [surahId, surahNameEn]
+      properties:
+        surahId:
+          type: integer
+        surahNameEn:
+          type: string
+        ayahCount:
+          type: integer
+
+    ReadingAnalytics:
+      type: object
+      required: [totalSessions, surahsRead, surahIds, dailyData, topSurahs]
+      properties:
+        totalSessions:
+          type: integer
+        surahsRead:
+          type: integer
+        surahIds:
+          type: array
+          items:
+            type: integer
+        dailyData:
+          type: array
+          items:
+            type: object
+            required: [date, count]
+            properties:
+              date:
+                type: string
+              count:
+                type: integer
+        topSurahs:
+          type: array
+          items:
+            type: object
+            required: [surahId, surahName, sessions]
+            properties:
+              surahId:
+                type: integer
+              surahName:
+                type: string
+              sessions:
+                type: integer
+
+    # ── Pinned Verses ──────────────────────────────────────────────────────────
+    PinnedVerse:
+      type: object
+      required: [id, userId, surahId, ayahNumber, surahNameEn, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        surahNameAr:
+          type: ["string", "null"]
+        ayahText:
+          type: ["string", "null"]
+        translation:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    PinnedVerseInput:
+      type: object
+      required: [surahId, ayahNumber, surahNameEn]
+      properties:
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        surahNameAr:
+          type: string
+        ayahText:
+          type: string
+        translation:
+          type: string
+
+    # ── Collections ───────────────────────────────────────────────────────────
+    Collection:
+      type: object
+      required: [id, userId, name, createdAt, updatedAt, verseCount]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        verseCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    CollectionInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    CollectionVerse:
+      type: object
+      required: [id, collectionId, userId, verseKey, surahId, ayahNumber, surahNameEn, createdAt]
+      properties:
+        id:
+          type: integer
+        collectionId:
+          type: integer
+        userId:
+          type: string
+        verseKey:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        ayahText:
+          type: ["string", "null"]
+        translation:
+          type: ["string", "null"]
+        note:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    CollectionVerseInput:
+      type: object
+      required: [verseKey, surahId, ayahNumber, surahNameEn]
+      properties:
+        verseKey:
+          type: string
+        surahId:
+          type: integer
+        ayahNumber:
+          type: integer
+        surahNameEn:
+          type: string
+        ayahText:
+          type: string
+        translation:
+          type: string
+        note:
+          type: string
+
+    CollectionDetail:
+      type: object
+      required: [id, userId, name, createdAt, updatedAt, verses]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: string
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        verses:
+          type: array
+          items:
+            $ref: "#/components/schemas/CollectionVerse"
+
+    # ── Verse of the Day ─────────────────────────────────────────────────────
+    VerseOfDay:
+      type: object
+      required: [surah, ayah, surahName, surahNameAr, arabic, translation, verseKey]
+      properties:
+        surah:
+          type: integer
+        ayah:
+          type: integer
+        surahName:
+          type: string
+        surahNameAr:
+          type: string
+        arabic:
+          type: string
+        translation:
+          type: string
+        verseKey:
+          type: string
+
+    # ── Profile ───────────────────────────────────────────────────────────────
+    ProfileMe:
+      type: object
+      required: [id, createdAt, lastSeenAt]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        lastSeenAt:
+          type: string
+          format: date-time
+
+    ProfileStats:
+      type: object
+      required: [totalBookmarks, totalNotes, totalHardAyahs, totalMastered, totalKhatm, currentStreak, longestStreak, totalMoods, totalCollections, totalPinnedVerses, badges]
+      properties:
+        totalBookmarks:
+          type: integer
+        totalNotes:
+          type: integer
+        totalHardAyahs:
+          type: integer
+        totalMastered:
+          type: integer
+        totalKhatm:
+          type: integer
+        currentStreak:
+          type: integer
+        longestStreak:
+          type: integer
+        totalMoods:
+          type: integer
+        totalCollections:
+          type: integer
+        totalPinnedVerses:
+          type: integer
+        badges:
+          type: array
+          items:
+            type: object
+            required: [id, title, description, earned]
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              description:
+                type: string
+              earned:
+                type: boolean
+              earnedAt:
+                type: ["string", "null"]
+
+    # ── Search ────────────────────────────────────────────────────────────────
+    SearchResult:
+      type: object
+      required: [surahId, surahName, ayahNumber, text, verseKey]
+      properties:
+        surahId:
+          type: integer
+        surahName:
+          type: string
+        ayahNumber:
+          type: integer
+        text:
+          type: string
+        verseKey:
+          type: string

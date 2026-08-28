@@ -1,0 +1,30 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1d5c52"/>
+      <stop offset="100%" stop-color="#0d3530"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="180" height="180" rx="40" fill="url(#bg)"/>
+  <rect width="180" height="180" rx="40" fill="url(#shine)"/>
+  <rect x="1.5" y="1.5" width="177" height="177" rx="39" fill="none" stroke="white" stroke-opacity="0.12" stroke-width="2"/>
+  <text
+    x="90"
+    y="126"
+    text-anchor="middle"
+    font-family="'Amiri', 'Traditional Arabic', 'Arabic Typesetting', 'Arial Unicode MS', serif"
+    font-size="108"
+    font-weight="700"
+    fill="white"
+    filter="url(#glow)"
+    opacity="0.95"
+  >ن</text>
+</svg>
