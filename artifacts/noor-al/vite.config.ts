@@ -64,7 +64,6 @@ export default defineConfig({
           "vendor-react":  ["react", "react-dom"],
           "vendor-motion": ["framer-motion"],
           "vendor-query":  ["@tanstack/react-query"],
-          "vendor-clerk":  ["@clerk/react"],
           "vendor-router": ["wouter"],
           "vendor-icons":  ["lucide-react"],
         },

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Link } from "wouter";
 import {
   Heart, Globe, Shield, Sparkles, Code2, Star,
@@ -9,7 +9,7 @@ import { InfoPageLayout } from "@/components/layout/info-layout";
 import { Button } from "@/components/ui/button";
 import { useAuthModal } from "@/lib/auth-modal-store";
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },
   visible: (i: number = 0) => ({
     opacity: 1,
