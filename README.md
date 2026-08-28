@@ -2,7 +2,7 @@
 
 NoorAl is a full-stack Quran companion for reading, memorization, reflection, prayer times, ahadith, dhikr, notes, bookmarks, collections, and personal progress tracking.
 
-<p align="center"> <a href="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260604_125109_19424216-4e2a-4560-b9f2-f1b5f6eb2c2e.mp4"> ▶️ Watch NoorAl in action </a> </p>
+<p align="center"> <img src="artifacts/noor-al/src/ezgif.com-video-to-gif-converter.gif" width="800" alt="NoorAl demo"> </p>
 
 ## Included
 
